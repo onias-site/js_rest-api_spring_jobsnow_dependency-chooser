@@ -48,6 +48,13 @@
 			<artifactId>js_business_jobsnow</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<!-- the writes of js are announced to their subscribers by class name (seeded in JnEntityWriteEventSubscribers), and
+		     the local messaging runs them inside this process: js does not import vis, so vis comes to the classpath here -->
+		<dependency>
+			<groupId>com.ccp.jn.vis</groupId>
+			<artifactId>vis_business_jobsnow</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 		<dependency>
 			<groupId>com.ccp.jn</groupId>
 			<artifactId>jn_business_jobsnow</artifactId>
