@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ccp.decorators.CcpJsonRepresentation;
-import com.jn.business.login.JnBusinessValidateLogin;
-import com.jn.entities.JnEntityLoginSessionValidation;
+import com.js.business.login.JsBusinessValidateLogin;
+import com.js.entities.JsEntityLoginSessionValidation;
 import com.js.rest.open.api.JsOpenApiLogin;
 import com.js.services.JsServiceLogin;
 
@@ -39,7 +39,7 @@ public class JsRestApiLogin implements JsOpenApiLogin {
 	public void validateLogin(@PathVariable("sessionToken") String sessionToken, @RequestBody String body) {
 		CcpJsonRepresentation ccpJsonRepresentation = new CcpJsonRepresentation(body);
 		CcpJsonRepresentation json = ccpJsonRepresentation.put(CcpJsonCommonsFields.sessionToken, sessionToken);
-		JnBusinessValidateLogin.INSTANCE.execute(json);
+		JsBusinessValidateLogin.INSTANCE.execute(json);
 	}
 	
 	/**
@@ -104,7 +104,7 @@ public class JsRestApiLogin implements JsOpenApiLogin {
 	@DeleteMapping("/{sessionToken}")
 	public void executeLogout(@RequestBody String body, @PathVariable("sessionToken") String sessionToken) {
 		CcpJsonRepresentation incompleteSessionValues = new CcpJsonRepresentation(body);
-		CcpJsonRepresentation completeSessionValues = incompleteSessionValues.put(JnEntityLoginSessionValidation.Fields.token, sessionToken);
+		CcpJsonRepresentation completeSessionValues = incompleteSessionValues.put(JsEntityLoginSessionValidation.Fields.token, sessionToken);
 		JsServiceLogin.ExecuteLogout.execute(completeSessionValues.content);
 	}
 

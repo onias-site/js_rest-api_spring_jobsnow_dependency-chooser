@@ -135,7 +135,7 @@ public interface JsOpenApiLogin {
 			description = "Pre-registration is pending. "
 				+ "The frontend should redirect the user to the pre-registration screen."),
 		@ApiResponse(content = {
-			@Content(schema = @Schema(example = "{\"asyncTaskId\": \"-484333a30ec794b6c5490290cfda0486e7c31c89\"}")) },
+			@Content(schema = @Schema(example = "")) },
 			responseCode = "202",
 			description = "Token for password registration sent to user's email. "
 				+ "The frontend should redirect the user to the password registration screen."),
@@ -190,7 +190,7 @@ public interface JsOpenApiLogin {
 			description = "Pre-registration is pending. "
 				+ "The frontend should redirect the user to the pre-registration screen."),
 		@ApiResponse(content = {
-			@Content(schema = @Schema(example = "{\"asyncTaskId\": \"-484333a30ec794b6c5490290cfda0486e7c31c89\"}")) },
+			@Content(schema = @Schema(example = "")) },
 			responseCode = "202",
 			description = "Token sent to user's email. "
 				+ "The frontend should redirect the user to the password registration screen."),
