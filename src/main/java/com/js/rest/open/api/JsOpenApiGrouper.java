@@ -95,7 +95,7 @@ public interface JsOpenApiGrouper {
 	@ApiResponses({
 		@ApiResponse(content = {
 			@Content(schema = @Schema(example = "{"
-				+ "\"jn_grouper\": {\"parentId\": \"8f3c...\", \"parentName\": \"js_login_email\", \"childName\": \"js_login_session_validation\","
+				+ "\"jn_grouper\": {\"parentId\": \"8f3c...\", \"parentName\": \"jn_login_email\", \"childName\": \"js_login_session_validation\","
 				+ " \"parentJson\": {\"email\": \"5e2b...\"}, \"child\": [\"a1b2...\"], \"childCount\": 1},"
 				+ "\"jn_inactive_grouper\": {}"
 				+ "}")) },

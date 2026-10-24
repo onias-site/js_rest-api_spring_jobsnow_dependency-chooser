@@ -38,6 +38,7 @@ import com.ccp.rest.api.spring.servlet.filters.CcpValidEmailFilter;
 import com.ccp.rest.api.utils.CcpRestApiUtils;
 import com.jn.business.session.JnBusinessValidateSession;
 import com.jn.entities.JnEntityJobsnowError;
+import com.js.rest.api.endpoints.JsRestApiContactUs;
 import com.js.rest.api.endpoints.JsRestApiGrouper;
 import com.js.rest.api.endpoints.JsRestApiLogin;
 
@@ -47,7 +48,8 @@ import io.swagger.v3.oas.models.info.Info;
 /**
  * Entry point of the REST API of the js cost center (login, port 8082). Wires the dependencies (local implementations
  * when {@code localEnvironment} is set, GCP and Elasticsearch otherwise), records unhandled errors in
- * {@code jn_jobsnow_error} and registers the servlet filters: e-mail syntax and session values on {@code /login/*}.
+ * {@code jn_jobsnow_error} and registers the servlet filters: e-mail syntax and session values on {@code /login/*} and
+ * {@code /contact-us/*} (which has no session, since 2026-10-23), session validation on {@code /grouper/*}.
  * Until 2026-10-17 the login was served by the API of the jn cost center (port 8080).
  */
 @EnableWebMvc
@@ -55,6 +57,7 @@ import io.swagger.v3.oas.models.info.Info;
 @ComponentScan(basePackageClasses = {
 		JsRestApiLogin.class,
 		JsRestApiGrouper.class,
+		JsRestApiContactUs.class,
 		CcpRestApiExceptionHandlerSpring.class,
 })
 @SpringBootApplication
@@ -153,27 +156,28 @@ public class JsRestApiSpringStarter {
 	}
 
 	/**
-	 * Rejects an invalid e-mail in the path of {@code /login/*} and {@code /grouper/*}.
+	 * Rejects an invalid e-mail in the path of {@code /login/*}, {@code /grouper/*} and {@code /contact-us/*}.
 	 * @return the filter registration
 	 */
 	@Bean
 	public FilterRegistrationBean<CcpValidEmailFilter> emailFilter() {
 		FilterRegistrationBean<CcpValidEmailFilter> filterRegistration = new FilterRegistrationBean<>();
-		CcpValidEmailFilter emailSyntaxFilter = CcpValidEmailFilter.getEmailSyntaxFilter("login/", "grouper/");
+		CcpValidEmailFilter emailSyntaxFilter = CcpValidEmailFilter.getEmailSyntaxFilter("login/", "grouper/", "contact-us/");
 		filterRegistration.setFilter(emailSyntaxFilter);
-		filterRegistration.addUrlPatterns("/login/*", "/grouper/*");
+		filterRegistration.addUrlPatterns("/login/*", "/grouper/*", "/contact-us/*");
 		return filterRegistration;
 	}
 
 	/**
-	 * Puts the session values (user agent, ip, e-mail) in the body of {@code /login/*}.
+	 * Puts the session values (user agent, ip, e-mail) in the body of {@code /login/*} and of {@code /contact-us/*}, which
+	 * has no session: the login screen may be the one with the bug.
 	 * @return the filter registration
 	 */
 	@Bean
 	public FilterRegistrationBean<CcpPutSessionValuesAndExecuteTaskFilter> putSessionValuesFilter() {
 		FilterRegistrationBean<CcpPutSessionValuesAndExecuteTaskFilter> filterRegistration = new FilterRegistrationBean<>();
 		filterRegistration.setFilter(CcpPutSessionValuesAndExecuteTaskFilter.TASKLESS);
-		filterRegistration.addUrlPatterns("/login/*");
+		filterRegistration.addUrlPatterns("/login/*", "/contact-us/*");
 		return filterRegistration;
 	}
 
