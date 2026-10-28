@@ -32,6 +32,7 @@ import com.ccp.implementations.password.mindrot.CcpMindrotPasswordHandler;
 import com.ccp.local.testings.implementations.CcpLocalInstances;
 import com.ccp.local.testings.implementations.cache.CcpLocalCacheInstances;
 import com.ccp.rest.api.spring.exceptions.handler.CcpRestApiExceptionHandlerSpring;
+import com.ccp.rest.api.spring.response.CcpRestApiSessionValuesRemoverSpring;
 import com.ccp.rest.api.spring.openapi.CcpMissingPathParamsCustomizer;
 import com.ccp.rest.api.spring.servlet.filters.CcpPutSessionValuesAndExecuteTaskFilter;
 import com.ccp.rest.api.spring.servlet.filters.CcpValidEmailFilter;
@@ -59,6 +60,7 @@ import io.swagger.v3.oas.models.info.Info;
 		JsRestApiGrouper.class,
 		JsRestApiContactUs.class,
 		CcpRestApiExceptionHandlerSpring.class,
+		CcpRestApiSessionValuesRemoverSpring.class,
 })
 @SpringBootApplication
 public class JsRestApiSpringStarter {
