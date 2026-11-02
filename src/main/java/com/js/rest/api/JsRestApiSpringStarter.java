@@ -16,12 +16,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.utils.entity.CcpEntityOperationType;
-import com.ccp.implementations.cache.gcp.memcache.CcpGcpMemCache;
+import com.ccp.implementations.cache.gcp.memorystore.CcpGcpMemoryStore;
 import com.ccp.implementations.db.bulk.elasticsearch.CcpElasticSerchDbBulk;
 import com.ccp.implementations.db.crud.elasticsearch.CcpElasticSearchCrud;
 import com.ccp.implementations.db.query.elasticsearch.CcpElasticSearchQueryExecutor;
 import com.ccp.implementations.db.utils.elasticsearch.CcpElasticSearchDbRequest;
-import com.ccp.implementations.email.sendgrid.CcpSendGridEmailSender;
+import com.ccp.implementations.email.sendgrid.CcpSendGridEmailProvider;
 import com.ccp.implementations.file.bucket.gcp.CcpGcpFileBucket;
 import com.ccp.implementations.http.apache.mime.CcpApacheMimeHttp;
 import com.ccp.implementations.instant.messenger.telegram.CcpTelegramInstantMessenger;
@@ -42,6 +42,7 @@ import com.jn.entities.JnEntityJobsnowError;
 import com.js.rest.api.endpoints.JsRestApiContactUs;
 import com.js.rest.api.endpoints.JsRestApiGrouper;
 import com.js.rest.api.endpoints.JsRestApiLogin;
+import com.js.rest.api.endpoints.JsRestApiTelegramWebhook;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -51,6 +52,7 @@ import io.swagger.v3.oas.models.info.Info;
  * when {@code localEnvironment} is set, GCP and Elasticsearch otherwise), records unhandled errors in
  * {@code jn_jobsnow_error} and registers the servlet filters: e-mail syntax and session values on {@code /login/*} and
  * {@code /contact-us/*} (which has no session, since 2026-10-23), session validation on {@code /grouper/*}.
+ * {@code /telegram-webhook/*} has no filter: only Telegram calls it, authenticated by the secret of the bot.
  * Until 2026-10-17 the login was served by the API of the jn cost center (port 8080).
  */
 @EnableWebMvc
@@ -59,6 +61,7 @@ import io.swagger.v3.oas.models.info.Info;
 		JsRestApiLogin.class,
 		JsRestApiGrouper.class,
 		JsRestApiContactUs.class,
+		JsRestApiTelegramWebhook.class,
 		CcpRestApiExceptionHandlerSpring.class,
 		CcpRestApiSessionValuesRemoverSpring.class,
 })
@@ -90,9 +93,9 @@ public class JsRestApiSpringStarter {
 		CcpDependencyInjection.loadAllDependencies
 		(
 				localEnvironment ? CcpLocalInstances.asyncMensageriaListener : CcpGcpPubSubMensageriaSender.INSTANCE,
-				localEnvironment ? CcpLocalInstances.email : CcpSendGridEmailSender.INSTANCE,
+				localEnvironment ? CcpLocalInstances.email : CcpSendGridEmailProvider.INSTANCE,
 				localEnvironment ? CcpLocalInstances.bucket : CcpGcpFileBucket.INSTANCE,
-				localEnvironment ? CcpLocalCacheInstances.map : CcpGcpMemCache.INSTANCE,
+				localEnvironment ? CcpLocalCacheInstances.map : CcpGcpMemoryStore.INSTANCE,
 				// local: writes to c:\logs\telegram instead of sending a real message to the support chat
 				localEnvironment ? CcpLocalInstances.instantMessenger : ccpTelegramInstantMessenger,
 				ccpMindrotPasswordHandler,
