@@ -15,7 +15,6 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.ccp.dependency.injection.CcpDependencyInjection;
-import com.ccp.especifications.db.utils.entity.CcpEntityOperationType;
 import com.ccp.implementations.cache.gcp.memorystore.CcpGcpMemoryStore;
 import com.ccp.implementations.db.bulk.elasticsearch.CcpElasticSerchDbBulk;
 import com.ccp.implementations.db.crud.elasticsearch.CcpElasticSearchCrud;
@@ -38,10 +37,12 @@ import com.ccp.rest.api.spring.servlet.filters.CcpPutSessionValuesAndExecuteTask
 import com.ccp.rest.api.spring.servlet.filters.CcpValidEmailFilter;
 import com.ccp.rest.api.utils.CcpRestApiUtils;
 import com.jn.business.session.JnBusinessValidateSession;
-import com.jn.entities.JnEntityJobsnowError;
+import com.jn.business.errors.JnBusinessSaveApiError;
+import com.jn.json.fields.validation.JnApiOrigins;
 import com.js.rest.api.endpoints.JsRestApiContactUs;
 import com.js.rest.api.endpoints.JsRestApiGrouper;
 import com.js.rest.api.endpoints.JsRestApiLogin;
+import com.js.rest.api.endpoints.JsRestApiPrivacyPolicy;
 import com.js.rest.api.endpoints.JsRestApiTelegramWebhook;
 
 import io.swagger.v3.oas.models.OpenAPI;
@@ -52,7 +53,7 @@ import io.swagger.v3.oas.models.info.Info;
  * when {@code localEnvironment} is set, GCP and Elasticsearch otherwise), records unhandled errors in
  * {@code jn_jobsnow_error} and registers the servlet filters: e-mail syntax and session values on {@code /login/*} and
  * {@code /contact-us/*} (which has no session, since 2026-10-23), session validation on {@code /grouper/*}.
- * {@code /telegram-webhook/*} has no filter: only Telegram calls it, authenticated by the secret of the bot.
+ * {@code /privacy-policy} is public and has no filter either. {@code /telegram-webhook/*} has no filter: only Telegram calls it, authenticated by the secret of the bot.
  * Until 2026-10-17 the login was served by the API of the jn cost center (port 8080).
  */
 @EnableWebMvc
@@ -61,6 +62,7 @@ import io.swagger.v3.oas.models.info.Info;
 		JsRestApiLogin.class,
 		JsRestApiGrouper.class,
 		JsRestApiContactUs.class,
+		JsRestApiPrivacyPolicy.class,
 		JsRestApiTelegramWebhook.class,
 		CcpRestApiExceptionHandlerSpring.class,
 		CcpRestApiSessionValuesRemoverSpring.class,
@@ -107,7 +109,7 @@ public class JsRestApiSpringStarter {
 				ccpApacheMimeHttp
 		);
 
-		CcpRestApiExceptionHandlerSpring.genericExceptionHandler = CcpEntityOperationType.save.getOperationCallback(JnEntityJobsnowError.ENTITY);
+		CcpRestApiExceptionHandlerSpring.genericExceptionHandler = new JnBusinessSaveApiError(JnApiOrigins.js);
 
 		SpringApplication.run(JsRestApiSpringStarter.class, args);
 	}
