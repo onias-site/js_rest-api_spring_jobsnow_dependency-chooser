@@ -1,5 +1,8 @@
 package com.js.rest.api.endpoints;
 
+import com.ccp.rest.api.utils.CcpRestApiUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 import java.util.Map;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -144,11 +147,17 @@ public class JsRestApiLogin implements JsOpenApiLogin {
 	}
 
 	/**
-	 * Always fails: exists only to exercise the exception handler of the API.
-	 * @throws JsErrorLoginEndpointOnlyForTesting always
+	 * Always fails: exists only to exercise the exception handler of the API, in the local environment. Out of it (in
+	 * production) it answers 404, as a route that does not exist, without registering an error.
+	 * @throws JsErrorLoginEndpointOnlyForTesting always, in the local environment
 	 */
 	@GetMapping("/erro")
 	public void onlyError() {
+		boolean notLocal = false == CcpRestApiUtils.isLocalEnvironment();
+		if(notLocal) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+		}
+
 		JsErrorLoginEndpointOnlyForTesting jnErrorLoginEndpointOnlyForTesting = new JsErrorLoginEndpointOnlyForTesting();
 		throw jnErrorLoginEndpointOnlyForTesting;
 	}
