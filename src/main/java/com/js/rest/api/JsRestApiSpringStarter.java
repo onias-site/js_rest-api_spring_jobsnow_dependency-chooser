@@ -33,7 +33,9 @@ import com.ccp.local.testings.implementations.cache.CcpLocalCacheInstances;
 import com.ccp.rest.api.spring.exceptions.handler.CcpRestApiExceptionHandlerSpring;
 import com.ccp.rest.api.spring.response.CcpRestApiSessionValuesRemoverSpring;
 import com.ccp.rest.api.spring.openapi.CcpMissingPathParamsCustomizer;
+import com.ccp.rest.api.spring.servlet.filters.CcpDbCallsLogFilter;
 import com.ccp.rest.api.spring.servlet.filters.CcpPutSessionValuesAndExecuteTaskFilter;
+import org.springframework.core.Ordered;
 import com.ccp.rest.api.spring.servlet.filters.CcpValidEmailFilter;
 import com.ccp.rest.api.utils.CcpRestApiUtils;
 import com.jn.business.session.JnBusinessValidateSession;
@@ -160,6 +162,21 @@ public class JsRestApiSpringStarter {
 			}
 		};
 		return webMvcConfigurer;
+	}
+
+	/**
+	 * Measures the calls to the database of every request and writes them in one line of the standard output, read by
+	 * the local panel of the requests ({@code documentation/deploy/27-requisicoes-do-cloud-run.py}). Runs before every
+	 * other filter, so the session validation is measured too.
+	 * @return the filter registration
+	 */
+	@Bean
+	public FilterRegistrationBean<CcpDbCallsLogFilter> dbCallsLogFilter() {
+		FilterRegistrationBean<CcpDbCallsLogFilter> filterRegistration = new FilterRegistrationBean<>();
+		filterRegistration.setFilter(CcpDbCallsLogFilter.INSTANCE);
+		filterRegistration.addUrlPatterns("/*");
+		filterRegistration.setOrder(Ordered.HIGHEST_PRECEDENCE);
+		return filterRegistration;
 	}
 
 	/**
