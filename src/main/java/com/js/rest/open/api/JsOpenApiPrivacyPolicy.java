@@ -37,7 +37,7 @@ public interface JsOpenApiPrivacyPolicy {
 		@ApiResponse(content = {
 			@Content(schema = @Schema(example = "{"
 				+ "\"language\": \"english\","
-				+ "\"message\": \"# Privacy policy\\n## 1. Who we are\\nJobsNow (https://onias.site) is a platform...\""
+				+ "\"message\": \"# Privacy policy\\n## 1. Who we are\\nOnias.Site (https://onias.site) is a platform...\""
 				+ "}")) },
 			responseCode = "200",
 			description = "The privacy policy."),
