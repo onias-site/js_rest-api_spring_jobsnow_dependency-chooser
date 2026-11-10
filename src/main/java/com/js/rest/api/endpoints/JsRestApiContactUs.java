@@ -2,7 +2,6 @@ package com.js.rest.api.endpoints;
 
 import java.util.Map;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +14,6 @@ import com.js.services.JsServiceContactUs;
  * REST controller of the "contact us" at path {@code /contact-us/{email}}: the tickets the user opens from the modal of
  * the front end. No session is required.
  */
-@CrossOrigin
 @RestController
 @RequestMapping("/contact-us/{email}")
 public class JsRestApiContactUs implements JsOpenApiContactUs {

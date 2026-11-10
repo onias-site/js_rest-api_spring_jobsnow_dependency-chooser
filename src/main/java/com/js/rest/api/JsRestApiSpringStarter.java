@@ -6,6 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -33,6 +34,7 @@ import com.ccp.local.testings.implementations.cache.CcpLocalCacheInstances;
 import com.ccp.rest.api.spring.exceptions.handler.CcpRestApiExceptionHandlerSpring;
 import com.ccp.rest.api.spring.response.CcpRestApiSessionValuesRemoverSpring;
 import com.ccp.rest.api.spring.openapi.CcpMissingPathParamsCustomizer;
+import com.ccp.rest.api.spring.servlet.filters.CcpCorsAndMethodsFilter;
 import com.ccp.rest.api.spring.servlet.filters.CcpDbCallsLogFilter;
 import com.ccp.rest.api.spring.servlet.filters.CcpPutSessionValuesAndExecuteTaskFilter;
 import org.springframework.core.Ordered;
@@ -176,6 +178,23 @@ public class JsRestApiSpringStarter {
 		filterRegistration.setFilter(CcpDbCallsLogFilter.INSTANCE);
 		filterRegistration.addUrlPatterns("/*");
 		filterRegistration.setOrder(Ordered.HIGHEST_PRECEDENCE);
+		return filterRegistration;
+	}
+
+	/**
+	 * The CORS of the API (only the origins of {@code ccp.cors.allowed-origins}, in {@code application.properties}) and
+	 * the refusal of {@code TRACE}; runs right after the measurements, before the filters of e-mail and session, so their
+	 * errors also reach the front end with the CORS headers.
+	 * @param allowedOrigins the origins allowed, separated by commas
+	 * @return the filter registration
+	 */
+	@Bean
+	public FilterRegistrationBean<CcpCorsAndMethodsFilter> corsAndMethodsFilter(@Value("${ccp.cors.allowed-origins:}") String allowedOrigins) {
+		FilterRegistrationBean<CcpCorsAndMethodsFilter> filterRegistration = new FilterRegistrationBean<>();
+		CcpCorsAndMethodsFilter filter = new CcpCorsAndMethodsFilter(allowedOrigins);
+		filterRegistration.setFilter(filter);
+		filterRegistration.addUrlPatterns("/*");
+		filterRegistration.setOrder(Ordered.HIGHEST_PRECEDENCE + 1);
 		return filterRegistration;
 	}
 

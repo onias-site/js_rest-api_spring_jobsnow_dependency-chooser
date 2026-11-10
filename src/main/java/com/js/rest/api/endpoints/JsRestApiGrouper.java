@@ -2,7 +2,6 @@ package com.js.rest.api.endpoints;
 
 import java.util.Map;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +16,6 @@ import com.js.rest.open.api.JsOpenApiGrouper;
 import com.js.services.JsServiceGrouper;
 
 /** Read of the groups of {@code jn_grouper} by their primary key, for the logged-in user. */
-@CrossOrigin
 @RestController
 @RequestMapping("/grouper/{email}")
 public class JsRestApiGrouper implements JsOpenApiGrouper {

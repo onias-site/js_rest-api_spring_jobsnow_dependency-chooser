@@ -2,7 +2,6 @@ package com.js.rest.api.endpoints;
 
 import java.util.Map;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,7 +14,6 @@ import com.js.rest.open.api.JsOpenApiPrivacyPolicy;
 import com.js.services.JsServicePrivacyPolicy;
 
 /** REST controller of the privacy policy at path {@code /privacy-policy}. Public: no session is required. */
-@CrossOrigin
 @RestController
 @RequestMapping("/privacy-policy")
 public class JsRestApiPrivacyPolicy implements JsOpenApiPrivacyPolicy {

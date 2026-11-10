@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.Map;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,7 +27,6 @@ import com.ccp.json.fields.validation.CcpJsonCommonsFields;
  * Covers user existence check, token creation, login with password, logout,
  * pre-registration, password registration, and token resend/unlock requests.
  */
-@CrossOrigin
 @RestController
 @RequestMapping("/login/{email}")
 public class JsRestApiLogin implements JsOpenApiLogin {
