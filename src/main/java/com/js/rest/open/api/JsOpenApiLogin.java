@@ -149,10 +149,6 @@ public interface JsOpenApiLogin {
 			description = "Token is locked. The frontend should redirect the user to the token unlock request screen."),
 		@ApiResponse(content = {
 			@Content(schema = @Schema(example = "")) },
-			responseCode = "409",
-			description = "User already logged in. The frontend should redirect the user to the password change screen."),
-		@ApiResponse(content = {
-			@Content(schema = @Schema(example = "")) },
 			responseCode = "423",
 			description = "Password pending unlock. The frontend should redirect the user to the password change screen."),
 	})
@@ -297,8 +293,6 @@ public interface JsOpenApiLogin {
 			description = "Token is locked. The frontend should redirect the user to the token unlock request screen."),
 		@ApiResponse(responseCode = "404",
 			description = "New user — email not found. The frontend should redirect the user to the email confirmation screen."),
-		@ApiResponse(responseCode = "409",
-			description = "User already logged in. The frontend should redirect the user to the password change screen."),
 		@ApiResponse(responseCode = "423",
 			description = "Password pending unlock. The frontend should redirect the user to the password change screen."),
 	})
@@ -380,10 +374,6 @@ public interface JsOpenApiLogin {
 			@Content(schema = @Schema(example = "")) },
 			responseCode = "404",
 			description = "Email not found. The frontend should redirect the user to the email confirmation screen."),
-		@ApiResponse(content = {
-			@Content(schema = @Schema(example = "")) },
-			responseCode = "409",
-			description = "User already logged in. The frontend should redirect the user to the password change screen."),
 		@ApiResponse(content = {
 			@Content(schema = @Schema(example = "")) },
 			responseCode = "423",

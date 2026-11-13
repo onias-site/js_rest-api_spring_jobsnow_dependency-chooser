@@ -55,8 +55,9 @@ import io.swagger.v3.oas.models.info.Info;
 /**
  * Entry point of the REST API of the js cost center (login, port 8082). Wires the dependencies (local implementations
  * when {@code localEnvironment} is set, GCP and Elasticsearch otherwise), records unhandled errors in
- * {@code jn_jobsnow_error} and registers the servlet filters: e-mail syntax and session values on {@code /login/*} and
- * {@code /contact-us/*} (which has no session, since 2026-10-23), session validation on {@code /grouper/*}.
+ * {@code jn_jobsnow_error} and registers the servlet filters: e-mail syntax and session values on {@code /login/*},
+ * session validation on {@code /grouper/*} and {@code /contact-us/*} (from 2026-10-23 to 2026-11-11 the contact us took
+ * no session; since then no ticket of any type is opened without login).
  * {@code /privacy-policy} is public and has no filter either. {@code /telegram-webhook/*} has no filter: only Telegram calls it, authenticated by the secret of the bot.
  * Until 2026-10-17 the login was served by the API of the jn cost center (port 8080).
  */
@@ -212,21 +213,21 @@ public class JsRestApiSpringStarter {
 	}
 
 	/**
-	 * Puts the session values (user agent, ip, e-mail) in the body of {@code /login/*} and of {@code /contact-us/*}, which
-	 * has no session: the login screen may be the one with the bug.
+	 * Puts the session values (user agent, ip, e-mail) in the body of {@code /login/*}.
 	 * @return the filter registration
 	 */
 	@Bean
 	public FilterRegistrationBean<CcpPutSessionValuesAndExecuteTaskFilter> putSessionValuesFilter() {
 		FilterRegistrationBean<CcpPutSessionValuesAndExecuteTaskFilter> filterRegistration = new FilterRegistrationBean<>();
 		filterRegistration.setFilter(CcpPutSessionValuesAndExecuteTaskFilter.TASKLESS);
-		filterRegistration.addUrlPatterns("/login/*", "/contact-us/*");
+		filterRegistration.addUrlPatterns("/login/*");
 		return filterRegistration;
 	}
 
 	/**
 	 * Validates the session ({@code JnBusinessValidateSession}, which runs the validator seeded by the login) on
-	 * {@code /grouper/*}, and puts the session values in the body.
+	 * {@code /grouper/*} and {@code /contact-us/*} (every ticket of the contact us requires login), and puts the session
+	 * values in the body.
 	 * @return the filter registration
 	 */
 	@Bean
@@ -234,7 +235,7 @@ public class JsRestApiSpringStarter {
 		FilterRegistrationBean<CcpPutSessionValuesAndExecuteTaskFilter> filterRegistration = new FilterRegistrationBean<>();
 		CcpPutSessionValuesAndExecuteTaskFilter filter = new CcpPutSessionValuesAndExecuteTaskFilter(JnBusinessValidateSession.INSTANCE);
 		filterRegistration.setFilter(filter);
-		filterRegistration.addUrlPatterns("/grouper/*");
+		filterRegistration.addUrlPatterns("/grouper/*", "/contact-us/*");
 		return filterRegistration;
 	}
 }

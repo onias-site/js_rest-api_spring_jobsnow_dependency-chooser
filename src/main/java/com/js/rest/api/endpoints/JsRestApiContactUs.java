@@ -12,7 +12,7 @@ import com.js.services.JsServiceContactUs;
 
 /**
  * REST controller of the "contact us" at path {@code /contact-us/{email}}: the tickets the user opens from the modal of
- * the front end. No session is required.
+ * the front end. A valid session of the e-mail of the path is required, for every type of ticket.
  */
 @RestController
 @RequestMapping("/contact-us/{email}")

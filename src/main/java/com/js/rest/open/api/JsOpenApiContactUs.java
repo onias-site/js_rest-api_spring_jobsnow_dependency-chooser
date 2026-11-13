@@ -12,8 +12,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
- * OpenAPI contract of the "contact us" at path {@code /contact-us/{email}}. It has no session: the login screen may be
- * the one with the bug, so the e-mail is the one the user is logged in with or the one the login modal keeps.
+ * OpenAPI contract of the "contact us" at path {@code /contact-us/{email}}. Every ticket, of any type, requires a valid
+ * session of the e-mail of the path (until 2026-11-11 no session was required).
  */
 @RequestMapping("/contact-us/{email}")
 @Tag(name = "Contact us", description = "Tickets the user opens from the contact us modal: bugs, compliments, criticisms, suggestions, comments and questions.")
@@ -29,9 +29,9 @@ public interface JsOpenApiContactUs {
 		description = "When does it occur? When the user sends the contact us modal. "
 			+ "What does it do? Saves the ticket (one open ticket per e-mail and type: a new one of the same type takes the place of the open one), "
 			+ "e-mails the user what they filled in, telling that the ticket is being analyzed, and sends the support the command to answer it. "
-			+ "No session is required."
+			+ "A valid session is required for every type of ticket."
 			+ "<br/><br/><b>Path variables:</b><ul>"
-			+ "<li><b>email</b> – Required. The e-mail the user is logged in with, or the one the login modal keeps. Min 7, max 100 characters.</li>"
+			+ "<li><b>email</b> – Required. The e-mail the user is logged in with. Min 7, max 100 characters.</li>"
 			+ "</ul>"
 			+ "<b>Request body fields (JSON):</b><ul>"
 			+ "<li><b>type</b> – Required. One of reportBug, makeCompliment, makeCriticism, makeSuggestion, makeComment, clarifyDoubts.</li>"
@@ -43,6 +43,7 @@ public interface JsOpenApiContactUs {
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "Ticket saved. The frontend should tell the user that the support will answer by e-mail."),
 		@ApiResponse(responseCode = "400", description = "Invalid email format."),
+		@ApiResponse(responseCode = "401", description = "No valid login. The frontend should open the login and send the ticket after it."),
 		@ApiResponse(responseCode = "403", description = "The support chose to ignore this user. The frontend should tell the user that the ticket could not be opened."),
 		@ApiResponse(responseCode = "422", description = "Validation error: a field missing or out of its size, or an unknown type."),
 		@ApiResponse(responseCode = "429", description = "Daily limit reached: a ticket of the same quota was opened in the last 24 hours (a question has its own quota; "
